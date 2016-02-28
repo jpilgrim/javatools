@@ -12,11 +12,9 @@ package de.jevopi.jetex.tex.primitives;
 
 import de.jevopi.jetex.ProcessorState;
 import de.jevopi.jetex.TokenAssignment;
-import de.jevopi.jetex.tex.expansion.ExpansionError;
-import de.jevopi.jetex.tex.tokens.ControlSequence;
 import de.jevopi.jetex.tex.tokens.IExpandableTokenIterator;
-import de.jevopi.jetex.tex.tokens.ITokenIterator;
 import de.jevopi.jetex.tex.tokens.Token;
+import de.jevopi.jetex.tex.tokens.TokenIterators;
 
 /**
  * <pre>
@@ -29,19 +27,11 @@ public class Futurelet extends PrimitiveCommand {
 	@Override
 	public void execute(ProcessorState state, IExpandableTokenIterator tokens) {
 		state.inhibitExpansion();
-		String name = getCSName(tokens);
+		String name = TokenIterators.getCSName(tokens);
 		Token token2 = tokens.peek(1);
 		state.allowExpension();
 		TokenAssignment tokenAssignment = new TokenAssignment(name, token2);
 		state.addTokenAssignment(tokenAssignment);
-	}
-
-	private String getCSName(ITokenIterator tokens) {
-		Token t = tokens.next();
-		if (t instanceof ControlSequence) {
-			return ((ControlSequence) t).getSequence();
-		}
-		throw new ExpansionError(tokens.getLocation(), "Expected Control Sequence, was " + t);
 	}
 
 }

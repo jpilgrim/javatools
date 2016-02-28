@@ -1,0 +1,4 @@
+\newenvironment{test}[1]{Hello #1!}{Goodbye}%
+\begin{test}{Y}xxx\end{test}
+% ---------------
+Hello Y!xxxGoodbye

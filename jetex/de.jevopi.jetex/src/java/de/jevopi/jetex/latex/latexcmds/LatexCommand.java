@@ -24,5 +24,7 @@ public abstract class LatexCommand extends Command {
 	public String getName() {
 		return name;
 	}
+	
+	
 
 }

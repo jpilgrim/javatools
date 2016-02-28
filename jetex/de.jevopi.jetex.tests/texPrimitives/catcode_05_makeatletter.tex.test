@@ -1,0 +1,9 @@
+\def\makeatletter{\catcode`\@11\relax}%
+\def\makeatother{\catcode`\@12\relax}%
+\makeatletter%
+\def\foo{<just foo>}%
+\def\foo@{<foo with at>}%
+\makeatother%
+\foo@\makeatletter\foo@\makeatother\foo@
+% ---------------
+<just foo>@<foo with at><just foo>@

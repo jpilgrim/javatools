@@ -60,12 +60,14 @@ public class CatcodeMap {
 	/**
 	 * Sets the category of a character, similar to tex command {@code \catcode}
 	 */
-	void catcode(final char c, Category newCategory) {
+	public void catcode(final char c, Category newCategory) {
 		Category oldCat = category(c);
 		if (oldCat != newCategory) {
 			charToCatcode.get(newCategory).add(c);
 			charToCatcode.get(oldCat).remove(c);
 		}
 	}
+	
+	
 
 }

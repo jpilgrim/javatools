@@ -15,44 +15,38 @@ import java.util.Collection;
 import java.util.List;
 
 import de.jevopi.jetex.ProcessorState;
-import de.jevopi.jetex.latex.LatexMacro;
+import de.jevopi.jetex.latex.LatexEnvironment;
+import de.jevopi.jetex.latex.LatexProcessorState;
 import de.jevopi.jetex.latex.LatexTokenIterators;
 import de.jevopi.jetex.tex.tokens.IExpandableTokenIterator;
 import de.jevopi.jetex.tex.tokens.Token;
+import de.jevopi.jetex.tex.tokens.TokenIterators;
 
 /**
  * <pre>
- * \newcommand{\«name»}[«no_parameters»][«default»]...«replacement»
- * </pre>
- * 
- * vs.
- * 
- * <pre>
- * \def#1...{«replacement»}
+ * \newenvironment{\«name»}[«no_parameters»][«default»]«replacementBegin»«replacementEnd»
  * </pre>
  */
-public class Newcommand extends LatexCommand {
+public class Newenvironment extends LatexCommand {
 
 	@Override
 	public void execute(ProcessorState state, IExpandableTokenIterator tokens) {
 		state.inhibitExpansion();
-		String csname = LatexTokenIterators.getCSName(tokens);
+		String envname = TokenIterators.getGroupedString(tokens);
 		int noParameters = LatexTokenIterators.getNoParameters(tokens);
 		List<List<Token>> defaults = new ArrayList<>(noParameters);
-		while (defaults.size()<noParameters) {
+		while (defaults.size() < noParameters) {
 			List<Token> def = LatexTokenIterators.getOptionalArg(tokens);
-			if (def==null) {
+			if (def == null) {
 				break;
 			}
 			defaults.add(def);
-		}	
-		Collection<Token> replacement = LatexTokenIterators.getReplacement(tokens);
+		}
+		Collection<Token> replacementBegin = LatexTokenIterators.getReplacement(tokens);
+		Collection<Token> replacementEnd = LatexTokenIterators.getReplacement(tokens);
 		state.allowExpension();
-		LatexMacro macro = new LatexMacro(csname, noParameters, defaults, replacement);
-		state.addMacro(macro);
+		LatexEnvironment env = new LatexEnvironment(envname, noParameters, defaults, replacementBegin, replacementEnd);
+		LatexProcessorState.cast(state).addEnvironment(env);
 	}
-
-	
-	
 
 }

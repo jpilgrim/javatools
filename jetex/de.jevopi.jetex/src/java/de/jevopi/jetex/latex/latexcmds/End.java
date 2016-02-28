@@ -21,17 +21,17 @@ import de.jevopi.jetex.tex.tokens.TokenIterators;
 
 /**
  * <pre>
- * \begin{«name»}[«optargs»]{«reqArgs»} ...
+ * \end{«name»}
  * </pre>
  * 
  */
-public class Begin extends LatexCommand {
+public class End extends LatexCommand {
 
 	@Override
 	public Iterator<Token> expand(ProcessorState state, ITokenIterator tokens) {
 		String envName = TokenIterators.getGroupedString(tokens);
 		LatexEnvironment env = LatexProcessorState.cast(state).getEnvironment(envName);
-		return env.expandBegin(state, tokens);
+		return env.expandEnd(state, tokens);
 	}
 	
 

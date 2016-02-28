@@ -11,6 +11,7 @@
 package de.jevopi.jetex.latex;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -83,12 +84,13 @@ public class LatexEnvironment {
 
 	public Iterator<Token> expandBegin(ProcessorState state, ITokenIterator tokens) {
 		List<? extends Iterable<Token>> arguments = LatexTokenIterators.getArguments(tokens, noParameters, defaults);
+		LatexProcessorState.cast(state).beginEnvironment(new EnvironmentStatus(this, arguments));
 		return new MacroExpansion(replacementBegin.iterator(), arguments);
 	}
 
 	public Iterator<Token> expandEnd(ProcessorState state, ITokenIterator tokens) {
-		List<? extends Iterable<Token>> arguments = LatexTokenIterators.getArguments(tokens, noParameters, defaults);
-		return new MacroExpansion(replacementEnd.iterator(), arguments);
+		LatexProcessorState.cast(state).endEnvironment();
+		return new MacroExpansion(replacementEnd.iterator(), Collections.emptyList());
 	}
 
 }

@@ -17,74 +17,88 @@ public enum Category {
 	/**
 	 * 0. Escape character \
 	 */
-	ESC('\\', "ESC"),
+	ESC(0, '\\', "ESC"),
 	/**
 	 * 1. Beginning of group {
 	 */
-	BEGINGROUP('{', "BG"),
+	BEGINGROUP(1, '{', "BG"),
 
 	/**
 	 * 2. End of group }
 	 */
-	ENDGROUP('}', "EG"),
+	ENDGROUP(2, '}', "EG"),
 	/**
 	 * 3. Math shift $
 	 */
-	MATHSHIFT('$', "MS"),
+	MATHSHIFT(3, '$', "MS"),
 	/**
 	 * 4. Alignment tab &
 	 */
-	TAB('&', "TAB"),
+	TAB(4, '&', "TAB"),
 	/**
 	 * 5. End of line \n
 	 */
-	EOL('\n', "EOL"),
+	EOL(5, '\n', "EOL"),
 	/**
 	 * 6. Parameter character #
 	 */
-	PAR('#', "PAR"),
+	PAR(6, '#', "PAR"),
 	/**
 	 * 7. Superscript ^
 	 */
-	SUPER('^', "SUP"),
+	SUPER(7, '^', "SUP"),
 	/**
 	 * 8. Subscript _
 	 */
-	SUB('_', "SUB"),
+	SUB(8, '_', "SUB"),
 	/**
 	 * 9. Ignored (char 0)
 	 */
-	IGNORE((char) 0, "IGN"),
+	IGNORE(9, (char) 0, "IGN"),
 	/**
 	 * 10. Space ' '
 	 */
-	SPACE(' ', "S"),
+	SPACE(10, ' ', "S"),
 	/**
 	 * 11. Letter a..z, A..Z
 	 */
-	LETTER('a', "L"),
+	LETTER(11, 'a', "L"),
 	/**
 	 * 12. Other; e.g. digits and punctuation.
 	 */
-	OTHER('.', "O"),
+	OTHER(12, '.', "O"),
 	/**
 	 * 13. Active; ~
 	 */
-	ACTIVE('~', "ACT"),
+	ACTIVE(13, '~', "ACT"),
 	/**
 	 * 14. Comment character %
 	 */
-	COMMENT('%', "CMT"),
+	COMMENT(14, '%', "CMT"),
 	/**
 	 * 15. Invalid character (char 127)
 	 */
-	INVALID((char) 127, "INV");
+	INVALID(15, (char) 127, "INV");
 
+	/**
+	 * Only for debugging.
+	 */
 	char defaultCharacter;
+
+	public final int code;
 
 	public final String shortID;
 
-	private Category(char defaultCharacter, String shortID) {
+	public static Category forCode(int code) {
+		if (code < 0 || code >= Category.values().length) {
+			throw new IndexOutOfBoundsException("Catcode must between 0 and " + (Category.values().length - 1)
+					+ ", was " + code);
+		}
+		return Category.values()[code];
+	}
+
+	private Category(int code, char defaultCharacter, String shortID) {
+		this.code = code;
 		this.defaultCharacter = defaultCharacter;
 		this.shortID = shortID;
 	}

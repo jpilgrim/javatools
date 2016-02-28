@@ -14,9 +14,13 @@ import static java.util.Collections.emptyList;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import de.jevopi.jetex.tex.Category;
+import de.jevopi.jetex.tex.execution.ExecutionError;
+import de.jevopi.jetex.tex.expansion.ExpansionError;
+import de.jevopi.jetex.tex.tokens.ControlSequence;
 import de.jevopi.jetex.tex.tokens.ITokenIterator;
 import de.jevopi.jetex.tex.tokens.Token;
 import de.jevopi.jetex.tex.tokens.TokenIterators;
@@ -59,6 +63,9 @@ public class LatexTokenIterators {
 	 */
 	public static List<Token> getOptionalArg(ITokenIterator tokens) {
 		Token t = tokens.peek();
+		if (t==null) {
+			return null;
+		}
 		if (isBeginOptionalGroup(t)) {
 			tokens.next(); // consume
 			int depth = 0;
@@ -87,5 +94,57 @@ public class LatexTokenIterators {
 	public static boolean isEndOptionalGroup(Token token) {
 		return (token.getCategory() == Category.OTHER && "]".equals(token.rawValue()));
 	}
+	
+	/**
+	 * Returns the number of parameters specified in newcommand or newenvironment. 
+	 */
+	public static int getNoParameters(ITokenIterator tokens) {
+		List<Token> noParametersGroup = LatexTokenIterators.getOptionalArg(tokens);
+		if (noParametersGroup!=null) {
+			if (noParametersGroup.size()!=1) {
+				throw new ExecutionError(tokens.getLocation(), "Expect single digit for number of parameters");
+			}
+			Token t = noParametersGroup.get(0);
+			if (t.getCategory()!=Category.OTHER) {
+				throw new ExecutionError(tokens.getLocation(), "Expect digit for number of parameters");
+			}
+			try {
+				return Integer.parseInt(t.rawValue());
+			} catch (NumberFormatException ex) {
+				throw new ExecutionError(tokens.getLocation(), "Expect digit for number of parameters, got " + t.rawValue());
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * Returns the control sequence name, either in a group (latex) or plain (tex).
+	 */
+	public static String getCSName(ITokenIterator tokens) {
+		Token t = tokens.next();
+		if (t instanceof ControlSequence) {
+			return t.getSequence();
+		}
+		if (t.getCategory() == Category.BEGINGROUP) {
+			Collection<Token> group = TokenIterators.fetchGroup(tokens);
+			if (group.size() != 1 || !(group.iterator().next() instanceof ControlSequence)) {
+				throw new ExpansionError(tokens.getLocation(), "Unsupported, expectd a single control sequence");
+			}
+			return group.iterator().next().getSequence();
+		}
+		throw new ExpansionError(tokens.getLocation(), "Expected Control Sequence, was " + t);
+	}
+
+	/**
+	 * Returns the replacement group (tex) or single element (latex)
+	 */
+	public static Collection<Token> getReplacement(ITokenIterator tokens) {
+		Token bg = tokens.next();
+		if (bg.getCategory() == Category.BEGINGROUP) {
+			return TokenIterators.fetchGroup(tokens);
+		}
+		return Collections.singleton(bg);
+	}
+
 
 }

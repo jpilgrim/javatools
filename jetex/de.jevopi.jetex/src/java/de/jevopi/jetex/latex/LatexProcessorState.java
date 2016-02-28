@@ -31,6 +31,13 @@ public class LatexProcessorState extends ProcessorState {
 			throw new RuntimeException(ex);
 		}
 	}
+	
+	/**
+	 * Cast helper.
+	 */
+	public static LatexProcessorState cast(ProcessorState state) {
+		return (LatexProcessorState) state;
+	}
 
 	private void initLatexCommands() throws IOException, InstantiationException, IllegalAccessException,
 			ClassNotFoundException {
@@ -42,8 +49,8 @@ public class LatexProcessorState extends ProcessorState {
 		environmentStack.push(envStatus);
 	}
 	
-	public void endEnvironment() {
-		environmentStack.pop();
+	public EnvironmentStatus endEnvironment() {
+		return environmentStack.pop();
 	}
 	
 	public void addEnvironment(LatexEnvironment env) {
