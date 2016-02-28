@@ -14,13 +14,15 @@ import static org.junit.Assert.assertEquals;
 import de.jevopi.jetex.ProcessorState;
 import de.jevopi.jetex.tex.expansion.ExpansionProcessor;
 import de.jevopi.jetex.tex.lexer.InputProcessor;
+import de.jevopi.jetex.tex.lexer.InputSource;
 import de.jevopi.jetex.tex.tokens.Token;
 
 public abstract class AbstractExpansionProcessorTest {
 
 	public void assertExpansion(String expectedOutput, String input) {
 		ProcessorState env = new ProcessorState();
-		InputProcessor ip = new InputProcessor(input, env);
+		InputProcessor ip = new InputProcessor(env);
+		ip.addInputSource(new InputSource("string", input));
 		ExpansionProcessor ep = new ExpansionProcessor(env, ip);
 		StringBuilder strb = new StringBuilder();
 		while (ep.hasNext()) {

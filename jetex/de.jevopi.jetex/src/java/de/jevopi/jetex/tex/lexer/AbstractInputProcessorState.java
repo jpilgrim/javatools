@@ -167,7 +167,7 @@ abstract class AbstractInputProcessorState extends CategorySwitch<Character, Tok
 	 */
 	@Override
 	protected Token caseInvalid(Character input) {
-		throw new IllegalStateException("Invalid character at " + this.inputProcessor.index);
+		throw new IllegalStateException("Invalid character at " + this.inputProcessor.getLocation());
 	}
 
 	/**

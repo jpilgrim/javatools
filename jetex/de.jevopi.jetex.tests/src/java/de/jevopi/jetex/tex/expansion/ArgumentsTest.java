@@ -21,6 +21,7 @@ import de.jevopi.jetex.tex.Macro;
 import de.jevopi.jetex.tex.execution.ExecutionProcessor;
 import de.jevopi.jetex.tex.expansion.ExpansionProcessor;
 import de.jevopi.jetex.tex.lexer.InputProcessor;
+import de.jevopi.jetex.tex.lexer.InputSource;
 import de.jevopi.jetex.tex.tokens.ExpandableTokenIterator;
 import de.jevopi.jetex.tex.tokens.Token;
 
@@ -76,7 +77,8 @@ public class ArgumentsTest extends AbstractExpansionProcessorTest {
 
 		// create macro
 		ProcessorState env = new ProcessorState();
-		InputProcessor ip = new InputProcessor(macroDefinition, env);
+		InputProcessor ip = new InputProcessor(env);
+		ip.addInputSource(new InputSource("macroDefinition", macroDefinition));
 		ExpansionProcessor ep = new ExpansionProcessor(env, ip);
 		ExecutionProcessor ex = new ExecutionProcessor(env, ep);
 
@@ -88,7 +90,9 @@ public class ArgumentsTest extends AbstractExpansionProcessorTest {
 		Macro foo = (Macro) env.getCommand("foo");
 
 		// read arguments
-		ip = new InputProcessor(input, env);
+		ip = new InputProcessor(env);
+		ip.addInputSource(new InputSource("arguments", input));
+		
 		ExpandableTokenIterator tokens = new ExpandableTokenIterator();
 		tokens.add(ip);
 		List<? extends Iterable<Token>> args = foo.getArguments(tokens);

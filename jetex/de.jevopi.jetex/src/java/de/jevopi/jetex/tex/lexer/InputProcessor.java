@@ -12,6 +12,11 @@ package de.jevopi.jetex.tex.lexer;
 
 import static de.jevopi.jetex.tex.Category.SPACE;
 import static de.jevopi.jetex.tex.Category.SUPER;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import de.jevopi.jetex.AbstractProcessor;
 import de.jevopi.jetex.ProcessorState;
 import de.jevopi.jetex.tex.TexLocation;
@@ -25,34 +30,27 @@ public class InputProcessor extends AbstractProcessor {
 	private AbstractInputProcessorState stateN, stateS, stateM;
 
 	AbstractInputProcessorState state;
-
-	final CharSequence input;
-
-	int index;
-
-	private int lineNumber = 0;
-
-	private int lineOffset;
-
-	private String filename;
-
-	public InputProcessor(CharSequence input, ProcessorState env) {
-		this(input, env, "unknown");
-	}
-
-	public InputProcessor(CharSequence input, ProcessorState env, String filename) {
-		super(env);
-		this.filename = filename; // only for error messages
-		this.input = input;
-		this.index = 0;
+	
+	List<InputSource> inputSources = new LinkedList<>();
+	InputSource is = null;
+	
+	public InputProcessor(ProcessorState state) {
+		super(state);
 		stateN = new StateNewline(this);
 		stateS = new StateSkippingSpaces(this);
 		stateM = new StateMiddleOfLine(this);
-		changeToStateNewline();
 	}
+	
+	public void addInputSource(InputSource inputSource) {
+		inputSources.add(inputSource);
+	}
+	
 
 	public TexLocation getLocation() {
-		return new TexLocation(index, lineNumber + 1, lineOffset - 1, filename);
+		if (is==null) {
+			return new TexLocation(0, 0, 0, "no source loaded");
+		}
+		return new TexLocation(is.index(), is.lineNumber() + 1, is.lineOffset() - 1, is.getName());
 	}
 
 	@Override
@@ -63,37 +61,73 @@ public class InputProcessor extends AbstractProcessor {
 
 	@Override
 	public boolean hasNext() {
-		return index < input.length();
+		if (is==null) {
+			nextInputSource();
+		}
+		if (is==null || !is.hasNext()) {
+			if (!nextInputSource()) {
+				return false;
+			}
+		}
+		return is.hasNext();
+	}
+	
+	private boolean nextInputSource() {
+		if (! inputSources.isEmpty()) {
+			is = inputSources.get(0);
+			inputSources.remove(0);
+			changeToStateNewline();
+			return true;
+		}
+		return false;
 	}
 
-	char nextChar() {
-
-		// 2.6 Accessing the full character set
-		char c = input.charAt(index++);
-		if (c == '\n') {
-			lineNumber++;
-			lineOffset = 0;
-		} else {
-			lineOffset++;
+	private boolean hasNext(int lookahead) {
+		if (is==null) {
+			if (!nextInputSource()) {
+				return false;
+			}
 		}
+		return is.hasNext(lookahead);
+	}
+	
+
+	char nextChar() {
+		if (is==null) {
+			if(!nextInputSource()) {
+				throw new NoSuchElementException("No more input sources");
+			}
+		}
+		char c = is.nextChar();
+		// 2.6 Accessing the full character set
 		c = accessFullCharacterSet(c);
 		return c;
 	}
+	
+	char peekChar() {
+		if (is==null) {
+			if(!nextInputSource()) {
+				throw new NoSuchElementException("No more input sources");
+			}
+		}
+		return is.peek();
+	}
+	
 
 	/**
 	 * cf. 2.6
 	 */
 	private char accessFullCharacterSet(final char c) {
-		if (getCatcodeMap().isCategory(c, SUPER) && index + 1 < input.length() && input.charAt(index) == c) {
-			if (index + 2 < input.length()) {
-				char[] hex = { input.charAt(index + 1), input.charAt(index + 2) };
+		if (getCatcodeMap().isCategory(c, SUPER) && hasNext() && is.peek() == c) {
+			if (hasNext(2)) {
+				char[] hex = { is.peek(1), is.peek(2) };
 				if (isLowerCaseHexDigit(hex[0]) && isLowerCaseHexDigit(hex[1])) {
-					index += 3;
+					is.nextChar();is.nextChar();is.nextChar();
 					return (char) Integer.parseInt(new String(hex), 16);
 				}
 			}
-			char offest64 = (char) (input.charAt(index + 1) - 64);
-			index += 2;
+			char offest64 = (char) (is.peek(1) - 64);
+			is.nextChar();is.nextChar();
 			return offest64;
 		}
 
@@ -111,21 +145,15 @@ public class InputProcessor extends AbstractProcessor {
 
 	void skipSpaces() {
 		while (hasNext()) {
-			int oldIndex = index;
-			char c = nextChar();
+			char c = is.peek();
 			if (!getCatcodeMap().isCategory(c, SPACE)) {
-				index = oldIndex;
 				return;
 			}
+			is.nextChar();
 		}
 	}
 
-	char peekChar() {
-		int oldIndex = index;
-		char c = nextChar();
-		index = oldIndex;
-		return c;
-	}
+	
 
 	private boolean isLowerCaseHexDigit(char c) {
 		return ('a' <= c && 'f' >= c) || ('0' <= c && '9' >= c);

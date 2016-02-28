@@ -19,49 +19,57 @@ public class InputProcessorTest extends AbstractInputProcessorTest {
 
 	@Test
 	public void testLetters() {
-		InputProcessor p = new InputProcessor("abc", new ProcessorState());
+		InputProcessor p = new InputProcessor(new ProcessorState());
+		p.addInputSource(new InputSource("test", "abc"));
 		assertTokens("L(a),L(b),L(c)", p);
 	}
 
 	@Test
 	public void testLettersAndSpaces() {
-		InputProcessor p = new InputProcessor("ab  c", new ProcessorState());
+		InputProcessor p = new InputProcessor(new ProcessorState());
+		p.addInputSource(new InputSource("test", "ab  c"));
 		assertTokens("L(a),L(b),S( ),L(c)", p);
 	}
 
 	@Test
 	public void testLettersAndSpacesAtEnd() {
-		InputProcessor p = new InputProcessor("abc  ", new ProcessorState());
+		InputProcessor p = new InputProcessor(new ProcessorState());
+		p.addInputSource(new InputSource("test", "abc  "));
 		assertTokens("L(a),L(b),L(c),S( )", p);
 	}
 
 	@Test
 	public void testCommandAndLetters() {
-		InputProcessor p = new InputProcessor("a\\bc", new ProcessorState());
+		InputProcessor p = new InputProcessor(new ProcessorState());
+		p.addInputSource(new InputSource("test", "a\\bc"));
 		assertTokens("L(a),\\bc", p);
 	}
 
 	@Test
 	public void testCommandAndLettersAndSpace() {
-		InputProcessor p = new InputProcessor("a\\bc d", new ProcessorState());
+		InputProcessor p = new InputProcessor(new ProcessorState());
+		p.addInputSource(new InputSource("test", "a\\bc d"));
 		assertTokens("L(a),\\bc,L(d)", p);
 	}
 
 	@Test
 	public void testCommandAndLettersAndSpace2() {
-		InputProcessor p = new InputProcessor("a \\bc d", new ProcessorState());
+		InputProcessor p = new InputProcessor(new ProcessorState());
+		p.addInputSource(new InputSource("test", "a \\bc d"));
 		assertTokens("L(a),S( ),\\bc,L(d)", p);
 	}
 
 	@Test
 	public void testLetterAndComment() {
-		InputProcessor p = new InputProcessor("a%comment", new ProcessorState());
+		InputProcessor p = new InputProcessor(new ProcessorState());
+		p.addInputSource(new InputSource("test", "a%comment"));
 		assertTokens("L(a),CMT(comment)", p);
 	}
 
 	@Test
 	public void testLetterAndCommentWithNewLine() {
-		InputProcessor p = new InputProcessor("a%comment\nb", new ProcessorState());
+		InputProcessor p = new InputProcessor(new ProcessorState());
+		p.addInputSource(new InputSource("test", "a%comment\nb"));
 		assertTokens("L(a),CMT(comment),L(b)", p);
 	}
 

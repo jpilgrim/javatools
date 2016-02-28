@@ -15,6 +15,7 @@ import java.util.Iterator;
 import de.jevopi.jetex.tex.execution.ExecutionProcessor;
 import de.jevopi.jetex.tex.expansion.ExpansionProcessor;
 import de.jevopi.jetex.tex.lexer.InputProcessor;
+import de.jevopi.jetex.tex.lexer.InputSource;
 import de.jevopi.jetex.tex.tokens.Token;
 import de.jevopi.jetex.visualization.AbstractVisualProcessor;
 
@@ -27,7 +28,8 @@ public abstract class AbstractLatexTransformer {
 	
 	public String transform(String latexInput, String filename) {
 		LatexProcessorState state = new LatexProcessorState();
-		InputProcessor ip = new InputProcessor(latexInput, state, filename);
+		InputProcessor ip = new InputProcessor(state);
+		ip.addInputSource(new InputSource(filename, latexInput));
 		ExpansionProcessor ep = new ExpansionProcessor(state, ip);
 		ExecutionProcessor ex = new LatexExecutionProcessor(state, ep);
 		AbstractVisualProcessor vp = getVisualProcessor(ex);
