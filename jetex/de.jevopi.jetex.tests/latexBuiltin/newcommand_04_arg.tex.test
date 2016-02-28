@@ -1,0 +1,3 @@
+\newcommand\f[1]{Hello #1}\f{World}
+% ---------------
+Hello World

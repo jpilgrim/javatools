@@ -1,0 +1,4 @@
+\def\f{\secret}%
+\futurelet\secret\f Hello World
+% ---------------
+HHello World

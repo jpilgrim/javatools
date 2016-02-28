@@ -1,0 +1,3 @@
+\def\f{\g world}\def\g{hello }\f
+% ---------------
+hello world

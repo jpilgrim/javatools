@@ -1,0 +1,6 @@
+\def\f{Hello}%
+\let\x=\f%
+\def\f{World}%
+\x\ \f
+% ---------------
+Hello World
