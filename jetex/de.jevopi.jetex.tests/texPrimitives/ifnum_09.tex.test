@@ -1,0 +1,4 @@
+\def\x{19}%
+\ifnum20=\x true\else false\fi
+% ---------------
+false

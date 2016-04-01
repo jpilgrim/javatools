@@ -1,0 +1,3 @@
+\ifnum1<1true\else false\fi
+% ---------------
+false

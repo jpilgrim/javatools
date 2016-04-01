@@ -1,0 +1,6 @@
+\ifcase0zero \or one \or two \else many\fi%
+\ifcase1 zero \or one \or two \else many\fi%
+\ifcase2 zero \or one \or two \else many\fi%
+\ifcase3 zero \or one \or two \else many\fi%
+% ---------------
+zero one two many

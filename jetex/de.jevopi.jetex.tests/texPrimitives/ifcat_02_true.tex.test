@@ -1,0 +1,3 @@
+\ifcat abtrue\else false\fi%
+% ---------------
+true

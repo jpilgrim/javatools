@@ -1,0 +1,4 @@
+\def\odd{19}%
+\ifodd\odd true\else false\fi
+% ---------------
+true

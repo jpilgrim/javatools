@@ -1,0 +1,3 @@
+\ifx aatrue\else false\fi%
+% ---------------
+true

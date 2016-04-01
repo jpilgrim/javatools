@@ -20,6 +20,7 @@ import java.util.List;
 
 import de.jevopi.jetex.Command;
 import de.jevopi.jetex.ProcessorState;
+import de.jevopi.jetex.tex.execution.ExecutionError;
 import de.jevopi.jetex.tex.expansion.MacroExpansion;
 import de.jevopi.jetex.tex.tokens.ITokenIterator;
 import de.jevopi.jetex.tex.tokens.Token;
@@ -74,17 +75,56 @@ public class Macro extends Command {
 		if (parDelimiters.isEmpty()) {
 			return emptyList();
 		}
-		List<List<Token>> arguments = new ArrayList<List<Token>>(parDelimiters.size());
+		List<List<Token>> arguments = new ArrayList<List<Token>>(parDelimiters.size() - 1);
+		boolean first = true;
 		for (List<Token> delimiters : parDelimiters) {
-			ArrayList<Token> arg;
-			if (delimiters.isEmpty()) {
-				arg = TokenIterators.getUndelimitedArg(tokens);
+			if (first) {
+				for (Token dToken : delimiters) {
+					if (!tokens.hasNext()) {
+						throw new ExecutionError(tokens.getLocation(), "Macro " + getName()
+								+ " needs to start with delimiter");
+					}
+					if (!dToken.equals(tokens.next())) {
+						throw new ExecutionError(tokens.getLocation(), "Wrong usage of macro " + getName()
+								+ ", wrong preceding delimiter");
+					}
+				}
+				first = false;
 			} else {
-				arg = TokenIterators.getDelimitedArg(tokens, delimiters);
+				ArrayList<Token> arg;
+				if (delimiters.isEmpty()) {
+					arg = TokenIterators.getUndelimitedArg(tokens);
+				} else {
+					arg = TokenIterators.getDelimitedArg(tokens, delimiters);
+				}
+				arguments.add(arg);
 			}
-			arguments.add(arg);
 		}
 		return arguments;
+	}
+
+	@Override
+	public boolean similar(Command c) {
+		if (c == this) {
+			return true;
+		}
+		if (c instanceof Macro) {
+			Macro m = (Macro) c;
+
+			if (parDelimiters.size() != m.parDelimiters.size()) {
+				return false;
+			}
+			if (!TokenIterators.similar(replacement, m.replacement)) {
+				return false;
+			}
+			for (int i = 0; i < parDelimiters.size(); i++) {
+				if (!TokenIterators.similar(parDelimiters.get(i), m.parDelimiters.get(i))) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
 	}
 
 }

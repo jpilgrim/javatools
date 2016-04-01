@@ -1,0 +1,4 @@
+\def\x{1}\def\y{9}%
+\ifnum\x\y=19true\else false\fi
+% ---------------
+true

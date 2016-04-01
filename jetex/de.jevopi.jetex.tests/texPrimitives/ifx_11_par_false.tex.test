@@ -1,0 +1,4 @@
+\def\f#1#2{\ifx #1#2 true \else false\fi}%
+\f
+% ---------------
+false

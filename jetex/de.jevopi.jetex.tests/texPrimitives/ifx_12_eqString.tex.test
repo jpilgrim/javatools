@@ -1,0 +1,4 @@
+\def\ifEqString#1#2{\def\testa{#1}\def\testb{#2}\ifx\testa\testb}%
+\ifEqString{Hello}{Hello}true\else false\fi
+% ---------------
+true

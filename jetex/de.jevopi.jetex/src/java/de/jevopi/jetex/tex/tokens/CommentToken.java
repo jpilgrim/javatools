@@ -24,6 +24,12 @@ public class CommentToken extends Token {
 	public Category getCategory() {
 		return Category.COMMENT;
 	}
+	
+	@Override
+	public TokenType getTokenType() {
+		return TokenType.Character;
+	}
+
 
 	@Override
 	public String rawValue() {

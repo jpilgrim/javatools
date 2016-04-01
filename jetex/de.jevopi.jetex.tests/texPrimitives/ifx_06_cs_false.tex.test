@@ -1,0 +1,4 @@
+\def\x{a}\def\y1{a}%
+\ifx \x\y true\else false\fi%
+% ---------------
+false

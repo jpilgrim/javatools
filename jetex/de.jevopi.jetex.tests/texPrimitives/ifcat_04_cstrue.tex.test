@@ -1,0 +1,4 @@
+\def\y{y}%
+\ifcat a\y true\else false\fi
+% ---------------
+true

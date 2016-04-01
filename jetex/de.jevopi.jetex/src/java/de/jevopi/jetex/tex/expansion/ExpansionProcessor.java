@@ -64,6 +64,16 @@ public class ExpansionProcessor extends AbstractProcessor implements IExpandable
 		throw new NoSuchElementException();
 	}
 
+	@Override
+	public Token peek() {
+		return inputTokens.peek();
+	}
+
+	@Override
+	public Token peek(int lookAhead) {
+		return inputTokens.peek(lookAhead);
+	}
+
 	private boolean canExpand(Token token) {
 		return !state.isExpansionInhibited() && token.isExpandable();
 	}
@@ -75,19 +85,10 @@ public class ExpansionProcessor extends AbstractProcessor implements IExpandable
 			if (cmd == null) {
 				throw new ExpansionError(getLocation(), "Undefined control sequence '" + seq + "'.");
 			}
-			return cmd.expand(state, inputTokens);
+			Iterator<Token> res = cmd.expand(state, this);
+			return res;
 		}
 		return null;
-	}
-
-	@Override
-	public Token peek() {
-		return inputTokens.peek();
-	}
-
-	@Override
-	public Token peek(int lookAhead) {
-		return inputTokens.peek(lookAhead);
 	}
 
 	@Override

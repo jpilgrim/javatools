@@ -21,6 +21,7 @@ import de.jevopi.jetex.tex.MacroPrefix;
 import de.jevopi.jetex.tex.expansion.MacroExpansion;
 import de.jevopi.jetex.tex.tokens.ITokenIterator;
 import de.jevopi.jetex.tex.tokens.Token;
+import de.jevopi.jetex.tex.tokens.TokenIterators;
 
 /**
  * A latex macro definition consists of, in sequence,
@@ -82,5 +83,31 @@ public class LatexMacro extends Command {
 		List<? extends Iterable<Token>> arguments = LatexTokenIterators.getArguments(tokens, noParameters, defaults);
 		return new MacroExpansion(replacement.iterator(), arguments);
 	}
+
+	
+	@Override
+	public boolean similar(Command c) {
+		if (c == this) {
+			return true;
+		}
+		if (c instanceof LatexMacro) {
+			LatexMacro m = (LatexMacro) c;
+
+			if (noParameters != m.noParameters || defaults.size()!=m.defaults.size()) {
+				return false;
+			}
+			if (!TokenIterators.similar(replacement, m.replacement)) {
+				return false;
+			}
+			for (int i = 0; i < defaults.size(); i++) {
+				if (!TokenIterators.similar(defaults.get(i), m.defaults.get(i))) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
 
 }

@@ -1,0 +1,3 @@
+\ifnum123456>12345true\else false\fi
+% ---------------
+true

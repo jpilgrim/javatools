@@ -27,6 +27,17 @@ public class CharacterToken extends Token {
 	}
 	
 	@Override
+	public TokenType getTokenType() {
+		return TokenType.Character;
+	}
+	
+	@Override
+	public int characterCode() {
+		return character;
+	}
+
+	
+	@Override
 	public String rawValue() {
 		return String.valueOf(character);
 	}

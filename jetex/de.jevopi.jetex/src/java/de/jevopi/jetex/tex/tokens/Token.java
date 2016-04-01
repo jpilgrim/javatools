@@ -21,6 +21,11 @@ import de.jevopi.jetex.tex.Category;
 public abstract class Token {
 
 	public abstract Category getCategory();
+	public abstract TokenType getTokenType();
+
+	public int characterCode() {
+		return -1;
+	}
 
 	public abstract String rawValue();
 

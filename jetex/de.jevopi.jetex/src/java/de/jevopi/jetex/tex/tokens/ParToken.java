@@ -21,6 +21,11 @@ public class ParToken extends Token {
 	}
 	
 	@Override
+	public TokenType getTokenType() {
+		return TokenType.Character;
+	}
+
+	@Override
 	public String rawValue() {
 		return "\n\n";
 	}

@@ -1,0 +1,4 @@
+\def\x{x}\def\y{y}%
+\if\x\y true\else false\fi%
+% ---------------
+false

@@ -19,6 +19,16 @@ public abstract class ControlSequence extends Token {
 		return Category.ESC;
 	}
 	
+	public int characterCode() {
+		return 256;
+	}
+	
+	@Override
+	public TokenType getTokenType() {
+		return TokenType.ControlSequence;
+	}
+
+	
 	/**
 	 * Returns the control symbol or sequence without preceding ESC character
 	 */

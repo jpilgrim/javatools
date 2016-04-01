@@ -12,6 +12,7 @@ package de.jevopi.jetex.tex.primitives;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import de.jevopi.jetex.ProcessorState;
@@ -41,16 +42,35 @@ public class Def extends PrimitiveCommand {
 		state.addMacro(macro);
 	}
 
-	
+	/**
+	 * Retrieves delimiters. There may be preceding and succeeding delimiters, e.g. in
+	 * <code>:#1,#2.</code>, ":" precedes all arguments and "." succeeds them.  
+	 * @param tokens
+	 * @return
+	 */
 	protected List<List<Token>> getDelimiters(ITokenIterator tokens) {
-		List<List<Token>> parDelimiters = new ArrayList<>(3);
+		List<List<Token>> parDelimiters = new ArrayList<>(5);
+		List<Token> delimiters = new ArrayList<>(3);
+		while (!tokens.peek().getCategory().in(Category.PAR, Category.BEGINGROUP)) {
+			delimiters.add(tokens.next());
+		}
+		if (delimiters.isEmpty()) {
+			parDelimiters.add(Collections.emptyList());
+		} else {
+			parDelimiters.add(delimiters);
+			delimiters = new ArrayList<>(3);
+		}
 		while (tokens.peek().getCategory() == Category.PAR) {
 			tokens.next();
-			List<Token> delimiters = new ArrayList<>(3);
 			while (!tokens.peek().getCategory().in(Category.PAR, Category.BEGINGROUP)) {
 				delimiters.add(tokens.next());
 			}
-			parDelimiters.add(delimiters);
+			if (delimiters.isEmpty()) {
+				parDelimiters.add(Collections.emptyList());
+			} else {
+				parDelimiters.add(delimiters);
+				delimiters = new ArrayList<>(3);
+			}
 		}
 		return parDelimiters;
 	}

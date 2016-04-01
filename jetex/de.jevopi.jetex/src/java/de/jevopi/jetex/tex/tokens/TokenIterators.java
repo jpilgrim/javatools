@@ -59,14 +59,25 @@ public class TokenIterators {
 
 	/**
 	 * Returns optional with number (i.e. digits which are consumed), or empty
-	 * optional if no number has been found. single characters can be used as 
-	 * numbers, in that case "'" (and optional "\") has to preceed the character.
+	 * optional if no number has been found. Single characters can be used as
+	 * numbers, in that case "'" (and optional "\") has to precede the
+	 * character.
 	 */
 	public static Optional<Integer> getNumber(ITokenIterator tokens) {
 		StringBuilder strb = new StringBuilder();
 		while (tokens.hasNext()) {
 			Token t = tokens.peek();
-			if (t.getCategory() == Category.OTHER && Character.isDigit(t.rawValue().charAt(0))) {
+			if (t.isExpandable()) {
+				Token expanded = tokens.next();
+				if (expanded.getCategory() == Category.OTHER && Character.isDigit(expanded.rawValue().charAt(0))) {
+					strb.append(expanded.rawValue());
+				} else {
+					if (tokens instanceof IExpandableTokenIterator) {
+						((IExpandableTokenIterator) tokens).add(expanded.iterator());
+					}
+					break;
+				}
+			} else if (t.getCategory() == Category.OTHER && Character.isDigit(t.rawValue().charAt(0))) {
 				tokens.next();
 				strb.append(t.rawValue());
 			} else {
@@ -80,15 +91,15 @@ public class TokenIterators {
 			Token t = tokens.next();
 			String s = t.rawValue();
 			char c;
-			if (s.length()==2 && s.charAt(0)=='\\') {
+			if (s.length() == 2 && s.charAt(0) == '\\') {
 				tokens.next(); // consume "sequence"
 				c = s.charAt(1);
-			} else if (s.length()==1) {
+			} else if (s.length() == 1) {
 				c = s.charAt(0);
 			} else {
 				throw new SyntaxError(tokens.getLocation(), "Expected number or 'character");
 			}
-			return Optional.of((int)c); 		
+			return Optional.of((int) c);
 		}
 		return Optional.empty();
 	}
@@ -117,7 +128,7 @@ public class TokenIterators {
 	/**
 	 * Returns delimited args, used by macros to retrieve arguments.
 	 */
-	public static ArrayList<Token> getDelimitedArg(ITokenIterator tokens, List<Token> delimiters) {
+	public static ArrayList<Token> getDelimitedArg(ITokenIterator tokens, List<Token> succeedingDelimiters) {
 		ArrayList<Token> arg;
 		arg = new ArrayList<>();
 		int delimiterIndex = 0;
@@ -129,14 +140,14 @@ public class TokenIterators {
 			} else {
 				arg.add(t);
 			}
-			if (t.equals(delimiters.get(delimiterIndex))) {
+			if (t.equals(succeedingDelimiters.get(delimiterIndex))) {
 				delimiterIndex++;
 			} else {
 				delimiterIndex = 0;
 			}
 
-			if (delimiterIndex == delimiters.size()) {
-				for (int i = 0; i < delimiters.size(); i++) {
+			if (delimiterIndex == succeedingDelimiters.size()) {
+				for (int i = 0; i < succeedingDelimiters.size(); i++) {
 					arg.remove(arg.size() - 1);
 				}
 				break;
@@ -195,9 +206,10 @@ public class TokenIterators {
 		}
 		return found;
 	}
-	
+
 	/**
-	 * Consumes following category character. Returns true such a character was found.
+	 * Consumes following category character. Returns true such a character was
+	 * found.
 	 */
 	public static boolean next(IExpandableTokenIterator tokens, Category category) {
 		if (tokens.hasNext() && tokens.peek().getCategory() == category) {
@@ -205,7 +217,7 @@ public class TokenIterators {
 			return true;
 		}
 		return false;
-		
+
 	}
 
 	/**
@@ -247,7 +259,21 @@ public class TokenIterators {
 
 	}
 
-	
-
+	public static boolean similar(Iterable<? extends Token> l, Iterable<? extends Token> r) {
+		if (l == null) {
+			return l == r;
+		}
+		if (r == null) {
+			return false;
+		}
+		Iterator<? extends Token> iterL = l.iterator();
+		Iterator<? extends Token> iterR = r.iterator();
+		while (iterL.hasNext() && iterR.hasNext()) {
+			if (!iterL.next().equals(iterR.next())) {
+				return false;
+			}
+		}
+		return iterL.hasNext() == iterR.hasNext();
+	}
 
 }

@@ -32,6 +32,12 @@ public class UnexpandableToken extends Token {
 	public Category getCategory() {
 		return token.getCategory();
 	}
+	
+	@Override
+	public TokenType getTokenType() {
+		return token.getTokenType();
+	}
+
 
 	@Override
 	public String rawValue() {

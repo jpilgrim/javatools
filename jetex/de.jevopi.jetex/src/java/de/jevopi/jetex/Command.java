@@ -41,5 +41,15 @@ public abstract class Command {
 	 */
 	public void execute(ProcessorState state, IExpandableTokenIterator tokenIterator) {
 	}
+	
+	/**
+	 * Return true if two commands are similarly defined. Used by ifx for instance.
+	 */
+	public boolean similar(Command c) {
+		if (c == null) {
+			return false;
+		}
+		return getName().equals(c.getName());
+	}
 
 }

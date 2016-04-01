@@ -19,6 +19,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Stack;
 
 import de.jevopi.jetex.tex.CatcodeMap;
 import de.jevopi.jetex.tex.primitives.PrimitiveCommand;
@@ -32,6 +34,12 @@ public class ProcessorState {
 	final Map<String, Command> commands = new HashMap<>();
 
 	boolean inhibitExpansion = false;
+
+	/**
+	 * Stack of condition results, used by else and fi to determine whether to
+	 * skip preceding tokens (or throw an error).
+	 */
+	final Stack<ConditionResult> conditionResults = new Stack<>();
 
 	public ProcessorState() {
 		catcodeMap = new CatcodeMap();
@@ -119,4 +127,23 @@ public class ProcessorState {
 	public boolean isExpansionInhibited() {
 		return inhibitExpansion;
 	}
+
+	public void pushConditionResult(ConditionResult conditionResult) {
+		conditionResults.push(conditionResult);
+	}
+
+	public Optional<ConditionResult> popConditionResult() {
+		if (conditionResults.empty()) {
+			return Optional.empty();
+		}
+		return Optional.of(conditionResults.pop());
+	}
+
+	public Optional<ConditionResult> peekConditionResult() {
+		if (conditionResults.empty()) {
+			return Optional.empty();
+		}
+		return Optional.of(conditionResults.peek());
+	}
+
 }

@@ -28,6 +28,11 @@ public class ParameterToken extends Token {
 	public Category getCategory() {
 		return Category.PAR;
 	}
+	
+	@Override
+	public TokenType getTokenType() {
+		return TokenType.Parameter;
+	}
 
 	@Override
 	public String rawValue() {

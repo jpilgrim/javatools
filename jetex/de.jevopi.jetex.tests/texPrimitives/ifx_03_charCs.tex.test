@@ -1,0 +1,4 @@
+\def\x{a}%
+\ifx a\x true\else false\fi%
+% ---------------
+false
