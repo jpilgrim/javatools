@@ -1,0 +1,7 @@
+\begin{env}[Hello]{world}yeah\end{env}
+% ---------------
+Helloworldyeah
+% ---------------
+\newenvironment{env}[2][]%
+	{#1#2}%
+	{}%

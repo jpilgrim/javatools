@@ -10,7 +10,7 @@
  */
 package de.jevopi.jetex;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +23,7 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runners.Parameterized.Parameter;
 
+import de.jevopi.jetex.latex.AbstractLatexTransformer;
 import de.jevopi.jetex.latex.LatexToText;
 
 public abstract class AbstractCommandsTest {
@@ -48,20 +49,29 @@ public abstract class AbstractCommandsTest {
     	String[] fixture = split(texAndExpectation);
     	String actual = process(fixture[0], testFile.getName());
     	assertEquals(fixture[1], actual);
-    	
     }
 
     
     public String process(String input, String filename) {
-    	LatexToText latexToText = new LatexToText();
+    	AbstractLatexTransformer latexToText = createLatexTransformer();
     	return latexToText.transform(input, filename);
 	}
 
 
-	private String[] split(String texAndExpectation) {
+	protected AbstractLatexTransformer createLatexTransformer() {
+		 return new LatexToText();
+	}
+
+
+	protected String[] split(String texAndExpectation) {
 		String[] split = texAndExpectation.split("%\\s+-+\n");
-		assertEquals("Wrong test file format", 2, split.length);
-		return new String[] { split[0].trim(), split[1].trim() };
+		assertTrue(split.length>=2);
+		String[] expectations = new String[split.length];
+		int i=0;
+		for (String s: split) {
+			expectations[i++] = s.trim();
+		}
+		return expectations;
 	}
 
 }

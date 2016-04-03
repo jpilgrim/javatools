@@ -1,0 +1,6 @@
+\f x%
+\f[Hello]{world}%
+% ---------------
+ xHelloworld
+ % ---------------
+ \newcommand\f[2][]{#1#2}%

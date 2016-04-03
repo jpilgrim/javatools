@@ -1,0 +1,7 @@
+\begin{env}world\end{env}
+% ---------------
+world
+% ---------------
+\newenvironment{env}%
+	{}%
+	{}%

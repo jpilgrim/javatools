@@ -8,7 +8,7 @@ import java.nio.file.Files;
 
 public class InputSource {
 
-	final static Charset UTF8 = Charset.forName("UTF-8");
+	public final static Charset UTF8 = Charset.forName("UTF-8");
 
 	private CharSequence sequence;
 

@@ -28,7 +28,8 @@ import de.jevopi.jetex.tex.tokens.TokenIterators;
 public class LatexTokenIterators {
 
 	/**
-	 * Returns list of arguments, optional arguments may be replaced with their default value.
+	 * Returns list of arguments, optional arguments may be replaced with their
+	 * default value.
 	 */
 	public static List<? extends Iterable<Token>> getArguments(ITokenIterator tokens, int noParameters,
 			List<? extends Collection<Token>> defaults) {
@@ -63,7 +64,7 @@ public class LatexTokenIterators {
 	 */
 	public static List<Token> getOptionalArg(ITokenIterator tokens) {
 		Token t = tokens.peek();
-		if (t==null) {
+		if (t == null) {
 			return null;
 		}
 		if (isBeginOptionalGroup(t)) {
@@ -94,31 +95,34 @@ public class LatexTokenIterators {
 	public static boolean isEndOptionalGroup(Token token) {
 		return (token.getCategory() == Category.OTHER && "]".equals(token.rawValue()));
 	}
-	
+
 	/**
-	 * Returns the number of parameters specified in newcommand or newenvironment. 
+	 * Returns the number of parameters specified in newcommand or
+	 * newenvironment.
 	 */
 	public static int getNoParameters(ITokenIterator tokens) {
 		List<Token> noParametersGroup = LatexTokenIterators.getOptionalArg(tokens);
-		if (noParametersGroup!=null) {
-			if (noParametersGroup.size()!=1) {
+		if (noParametersGroup != null) {
+			if (noParametersGroup.size() != 1) {
 				throw new ExecutionError(tokens.getLocation(), "Expect single digit for number of parameters");
 			}
 			Token t = noParametersGroup.get(0);
-			if (t.getCategory()!=Category.OTHER) {
+			if (t.getCategory() != Category.OTHER) {
 				throw new ExecutionError(tokens.getLocation(), "Expect digit for number of parameters");
 			}
 			try {
 				return Integer.parseInt(t.rawValue());
 			} catch (NumberFormatException ex) {
-				throw new ExecutionError(tokens.getLocation(), "Expect digit for number of parameters, got " + t.rawValue());
+				throw new ExecutionError(tokens.getLocation(), "Expect digit for number of parameters, got "
+						+ t.rawValue());
 			}
 		}
 		return 0;
 	}
 
 	/**
-	 * Returns the control sequence name, either in a group (latex) or plain (tex).
+	 * Returns the control sequence name, either in a group (latex) or plain
+	 * (tex).
 	 */
 	public static String getCSName(ITokenIterator tokens) {
 		Token t = tokens.next();
@@ -145,6 +149,5 @@ public class LatexTokenIterators {
 		}
 		return Collections.singleton(bg);
 	}
-
 
 }

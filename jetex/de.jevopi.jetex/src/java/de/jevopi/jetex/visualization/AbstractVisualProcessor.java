@@ -36,12 +36,32 @@ public abstract class AbstractVisualProcessor implements Iterator<String> {
 			case LETTER: next = letter(token) ; break;
 			case OTHER: next = other(token); break;
 			case SPACE: next = space(token); break;
+			case SUB: next = sub(token); break;
+			case SUPER: next = sup(token); break;
+			case MATHSHIFT: next = mathshift(token); break;
+			case TAB: next = tab(token); break;
 			default: // do nothing;
 			} // @formatter:on
 			if (next != null) {
 				break;
 			}
 		}
+	}
+
+	protected String tab(Token token) {
+		return null;
+	}
+
+	protected String mathshift(Token token) {
+		return null;
+	}
+
+	protected String sup(Token token) {
+		return null;
+	}
+
+	protected String sub(Token token) {
+		return null;
 	}
 
 	protected abstract String space(Token token);

@@ -1,0 +1,5 @@
+\f{Hello} world
+% ---------------
+ Hello world
+ % ---------------
+ \newcommand\f[1]{#1}%

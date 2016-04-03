@@ -24,7 +24,6 @@ public abstract class Command {
 
 	public final static Iterator<Token> SKIP = Collections.<Token> emptyList().iterator();
 
-	
 	public abstract String getName();
 
 	/**

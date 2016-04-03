@@ -1,6 +1,6 @@
-/**
+/*
  * Copyright (c) 2016 Jens von Pilgrim
- * All rights reserved.   This program and the accompanying materials
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
@@ -32,13 +32,13 @@ public class LatexEnvironment {
 
 		public final List<? extends Iterable<Token>> arguments;
 
-		EnvironmentStatus(LatexEnvironment environment, List<? extends Iterable<Token>> arguments) {
+		public EnvironmentStatus(LatexEnvironment environment, List<? extends Iterable<Token>> arguments) {
 			this.environment = environment;
 			this.arguments = arguments;
 		}
 
 	}
-
+	
 	private final String name;
 
 	private final int noParameters;
@@ -92,5 +92,5 @@ public class LatexEnvironment {
 		LatexProcessorState.cast(state).endEnvironment();
 		return new MacroExpansion(replacementEnd.iterator(), Collections.emptyList());
 	}
-
+	
 }

@@ -27,10 +27,16 @@ import static de.jevopi.jetex.tex.Category.SUB;
 import static de.jevopi.jetex.tex.Category.SUPER;
 import static de.jevopi.jetex.tex.Category.TAB;
 
+/**
+ * Switch class, subclasses only need to implement the handled cases. The switch
+ * is called via {@link #switchCategory(Category, Object)}. All non explicitly
+ * handled cases delegate to the {@link #defaultCase(Category, Object)}. This
+ * class is used for instance for state machines.
+ */
 public class CategorySwitch<INPUT, RETURN> {
 
 	public RETURN switchCategory(Category cat, INPUT input) {
-		switch(cat) {
+		switch (cat) {
 		case ACTIVE:
 			return caseActive(input);
 		case BEGINGROUP:
@@ -65,7 +71,7 @@ public class CategorySwitch<INPUT, RETURN> {
 			return caseTab(input);
 		default:
 			return defaultCase(cat, input);
-		
+
 		}
 	}
 
@@ -100,7 +106,7 @@ public class CategorySwitch<INPUT, RETURN> {
 	protected RETURN caseInvalid(INPUT input) {
 		return defaultCase(INVALID, input);
 	}
-	
+
 	protected RETURN caseLetter(INPUT input) {
 		return defaultCase(LETTER, input);
 	}
