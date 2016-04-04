@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import de.jevopi.jetex.tex.tokens.ExpandableTokenIterator;
+import de.jevopi.jetex.tex.tokens.NullToken;
 import de.jevopi.jetex.tex.tokens.ParameterToken;
 import de.jevopi.jetex.tex.tokens.Token;
 
@@ -33,7 +34,11 @@ public class MacroExpansion extends ExpandableTokenIterator {
 		if (token instanceof ParameterToken) {
 			int index = ((ParameterToken) token).getIndex();
 			Iterable<Token> arg = arguments.get(index-1);
-			add(arg.iterator());
+			if (arg.iterator().hasNext()) {
+				add(arg.iterator());
+			} else {
+				add(NullToken.NULL_TOKEN.iterator());
+			}
 			return next();
 		}
 		return token;

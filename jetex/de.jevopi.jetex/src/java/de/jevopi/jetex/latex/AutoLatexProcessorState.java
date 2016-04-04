@@ -23,8 +23,8 @@ import de.jevopi.jetex.latex.undefsupport.UndefinedEnvironment;
  */
 public class AutoLatexProcessorState extends LatexProcessorState {
 	
-	final ElementsStatistics<Command> commandStatistics = new ElementsStatistics<>();
-	final ElementsStatistics<LatexEnvironment> environmentStatistics = new ElementsStatistics<>();
+	final ElementsStatistics commandStatistics = new ElementsStatistics();
+	final ElementsStatistics environmentStatistics = new ElementsStatistics();
 	
 	final Set<UndefinedCommand> undefinedCommands = new HashSet<>();
 	final Set<UndefinedEnvironment> undefinedEnvironments = new HashSet<>();
@@ -36,7 +36,7 @@ public class AutoLatexProcessorState extends LatexProcessorState {
 			undefinedCommands.add((UndefinedCommand) cmd);
 			addMacro(cmd);
 		}
-		commandStatistics.inc(cmd);
+		commandStatistics.inc(sequence);
 		return cmd;
 	}
 
@@ -47,8 +47,16 @@ public class AutoLatexProcessorState extends LatexProcessorState {
 			undefinedEnvironments.add((UndefinedEnvironment) env);
 			addEnvironment(env);
 		}
-		environmentStatistics.inc(env);
+		environmentStatistics.inc(name);
 		return env;
+	}
+	
+	public int getCommandUsage(String name) {
+		return commandStatistics.getUsageCount(name);
+	}
+
+	public int getEnvironmentUsage(String name) {
+		return environmentStatistics.getUsageCount(name);
 	}
 	
 }

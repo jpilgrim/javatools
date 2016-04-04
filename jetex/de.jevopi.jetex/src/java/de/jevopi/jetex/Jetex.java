@@ -13,10 +13,10 @@ package de.jevopi.jetex;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import de.jevopi.jetex.latex.LatexToHTML;
 import de.jevopi.jetex.tex.lexer.InputSource;
@@ -24,17 +24,26 @@ import de.jevopi.jetex.tex.lexer.InputSource;
 public class Jetex {
 
 	public static void main(String[] args) throws IOException {
-		Jetex app = new Jetex();
-		int res = app.parseArgs(args);
-		if (res != 0) {
-			System.exit(res);
+		try {
+			Jetex app = new Jetex();
+			int res = app.parseArgs(args);
+			if (res != 0) {
+				System.exit(res);
+			}
+			app.run();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(3);
+			
 		}
-		app.run();
 	}
 
 	private String autoDefFile;
+
 	private List<String> inputFile = new ArrayList<>();
+
 	private String outFile;
+
 	private boolean enforce = false;
 
 	private int parseArgs(String[] args) {
@@ -47,7 +56,7 @@ public class Jetex {
 				} else if ("-o".equals(s)) {
 					outFile = nextArg(i++, args, "Output file expected");
 				} else if ("-f".equals(s)) {
-					enforce=true;
+					enforce = true;
 				} else {
 					inputFile.add(s);
 				}
@@ -64,24 +73,24 @@ public class Jetex {
 	}
 
 	private boolean check() {
-		for (String s: inputFile) {
+		for (String s : inputFile) {
 			if (!new File(s).exists()) {
 				System.err.println("input file " + s + " not found");
 				return false;
 			}
-			
+
 		}
-		if (inputFile.isEmpty()) { 
+		if (inputFile.isEmpty()) {
 			System.err.println("at least one input file required");
 			return false;
 		}
-		if (autoDefFile!=null) {
+		if (autoDefFile != null) {
 			if (!enforce && new File(autoDefFile).exists()) {
 				System.err.println("initDefFile already exist");
 				return false;
 			}
 		}
-		if (outFile!=null) {
+		if (outFile != null) {
 			if (!enforce && new File(outFile).exists()) {
 				System.err.println("output file already exist");
 				return false;
@@ -94,29 +103,36 @@ public class Jetex {
 		System.err.flush();
 		try {
 			Thread.sleep(10);
-		} catch (InterruptedException e) {}
-		System.out.println("jetex [-a autoDefFile] [-f] -o outfile inputfile_1 [... inputfile_n]\n"
-				+ "with:\n"
+		} catch (InterruptedException e) {
+		}
+		System.out.println("jetex [-a autoDefFile] [-f] -o outfile inputfile_1 [... inputfile_n]\n" + "with:\n"
 				+ "-a autoDefFile: Creates an file with all (unknown) macros used in given texfile\n"
-				+ "-f force overwriting of autoDefFile and output file/n"
-				+ "-o outfile: Output file");
+				+ "-f force overwriting of autoDefFile and output file/n" + "-o outfile: Output file");
 	}
 
 	String nextArg(int i, String[] args, String errorMessage) {
-		if (i < args.length) {
+		if (i >= args.length) {
 			System.err.println(errorMessage);
 			throw new IllegalArgumentException();
 		}
 		return args[i];
 	}
-	
+
 	void run() throws IOException {
 		LatexToHTML latexToHTML = new LatexToHTML();
-		File[] files = (File[]) inputFile.stream().map(s -> new File(s)).toArray();
+		File[] files = inputFile.stream().map(s -> new File(s)).collect(Collectors.toList()).toArray(new File[inputFile.size()]);
 		String out = latexToHTML.transform(files);
 		FileOutputStream fos = new FileOutputStream(new File(outFile));
 		fos.write(out.getBytes(InputSource.UTF8));
 		fos.close();
+		if (autoDefFile!=null) {
+			String s = latexToHTML.getUndefinedElementsTemplate();
+			if (! s.isEmpty()) {
+				fos = new FileOutputStream(new File(autoDefFile));
+				fos.write(s.getBytes(InputSource.UTF8));
+				fos.close();
+			}
+		}
 	}
 
 }

@@ -26,14 +26,14 @@ import de.jevopi.jetex.visualization.AbstractVisualProcessor;
 
 public abstract class AbstractLatexTransformer {
 
-	
 	private Set<UndefinedCommand> undefinedCommands;
+
 	private Set<UndefinedEnvironment> undefinedEnvironments;
 
 	public String transform(String latexInput) {
 		return transform(latexInput, null);
 	}
-	
+
 	/**
 	 * @param latexInput the input as string
 	 * @param filename filename, only used for error messages
@@ -41,57 +41,62 @@ public abstract class AbstractLatexTransformer {
 	public String transform(String latexInput, String filename) {
 		return doTransform(new InputSource(filename, latexInput));
 	}
-	
+
 	public String transform(File... files) throws IOException {
 		InputSource[] inputSources = new InputSource[files.length];
-		int i=0;
-		for (File file: files) {
+		int i = 0;
+		for (File file : files) {
 			inputSources[i++] = new InputSource(file);
 		}
 		return doTransform(inputSources);
 	}
-	
+
 	private String doTransform(InputSource... inputSources) {
 		LatexProcessorState state = createLatexProcessorState();
 		undefinedCommands = null;
 		undefinedEnvironments = null;
 		InputProcessor ip = new InputProcessor(state);
-		for (InputSource inputSource: inputSources) {
+		for (InputSource inputSource : inputSources) {
 			ip.addInputSource(inputSource);
 		}
 		ExpansionProcessor ep = new ExpansionProcessor(state, ip);
 		ExecutionProcessor ex = new LatexExecutionProcessor(state, ep);
 		AbstractVisualProcessor vp = getVisualProcessor(ex);
 		StringBuilder strb = new StringBuilder();
-		while (vp.hasNext()) {
-			strb.append(vp.next());
-		}
-		
+
+//		try {
+			while (vp.hasNext()) {
+				strb.append(vp.next());
+			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+
 		if (state instanceof AutoLatexProcessorState) {
 			undefinedCommands = ((AutoLatexProcessorState) state).undefinedCommands;
 			undefinedEnvironments = ((AutoLatexProcessorState) state).undefinedEnvironments;
 		}
-		
+
 		return strb.toString();
 	}
 
 	protected LatexProcessorState createLatexProcessorState() {
 		return new LatexProcessorState();
 	}
-	
+
 	public String getUndefinedElementsTemplate() {
 		StringBuilder strb = new StringBuilder();
-		if (undefinedCommands!=null) {
-			for (UndefinedCommand cmd: undefinedCommands) {
-				if (strb.length()>0) {
+		if (undefinedCommands != null) {
+			for (UndefinedCommand cmd : undefinedCommands) {
+				if (strb.length() > 0) {
 					strb.append("\n");
 				}
 				strb.append(cmd.definitionTemplate());
 			}
 		}
-		if (undefinedEnvironments!=null) {
-			for (UndefinedEnvironment env: undefinedEnvironments) {
-				if (strb.length()>0) {
+		if (undefinedEnvironments != null) {
+			for (UndefinedEnvironment env : undefinedEnvironments) {
+				if (strb.length() > 0) {
 					strb.append("\n");
 				}
 				strb.append(env.definitionTemplate());

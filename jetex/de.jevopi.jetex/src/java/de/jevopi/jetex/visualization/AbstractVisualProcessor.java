@@ -46,6 +46,7 @@ public abstract class AbstractVisualProcessor implements Iterator<String> {
 				break;
 			}
 		}
+
 	}
 
 	protected String tab(Token token) {

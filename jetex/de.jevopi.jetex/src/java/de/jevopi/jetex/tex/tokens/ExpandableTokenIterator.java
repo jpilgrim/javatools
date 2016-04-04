@@ -40,7 +40,7 @@ public class ExpandableTokenIterator implements IExpandableTokenIterator {
 				tokens.pop();
 			}
 		}
-		throw new NoSuchElementException();
+		throw new NoSuchElementException("at: " + getLocation());
 	}
 
 	@Override

@@ -86,6 +86,14 @@ abstract class AbstractInputProcessorState extends CategorySwitch<Character, Tok
 			inputProcessor.changeToStateSkippingSpaces();
 			return t;
 		}
+		case COMMENT: // escape % -- TODO check
+		case SUB: // escape _ -- TODO check
+		case SUPER: // escape ^ -- TODO check
+		case ESC: // escape \ -- TODO check
+		case PAR: { // escaped # -- TODO check
+			Token t = new CharacterToken(this.inputProcessor.nextChar(), Category.LETTER);
+			return t;
+		}
 		default: {
 			Token t = new ControlSymbol(c);
 			inputProcessor.changeToStateMiddleOfLine();
