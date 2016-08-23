@@ -40,7 +40,12 @@ public class Catcode extends PrimitiveCommand {
 			if (! categoryCode.isPresent()) {
 				throw new ExecutionError(tokens.getLocation(), "Expected category number");
 			}
+			
+//			System.out.println("old catcode for " + character +": " + state.getCatcodeMap().category(character));
+			
 			state.getCatcodeMap().catcode(character, Category.forCode(categoryCode.get()));
+			
+//			System.out.println("new catcode for " + character +": " + state.getCatcodeMap().category(character));
 		} else {
 			throw new ExecutionError(tokens.getLocation(), "Expected character number");
 		}

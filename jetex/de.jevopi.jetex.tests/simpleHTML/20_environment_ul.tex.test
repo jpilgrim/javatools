@@ -1,5 +1,9 @@
+\def\makelessletter{\catcode`\<=11\relax}%
+\def\makelessother{\catcode`\<=12\relax}%
+\makelessletter%
 \newenvironment{itemize}{<ul>}{</ul>}%
 \def\item{<li>}%
+\makelessother%
 before
 \begin{itemize}
 \item one

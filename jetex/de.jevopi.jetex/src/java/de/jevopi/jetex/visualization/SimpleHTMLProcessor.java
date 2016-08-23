@@ -45,7 +45,14 @@ public class SimpleHTMLProcessor extends TextProcessor {
 
 	@Override
 	protected String other(Token token) {
-		return token.rawValue();
+		String raw = token.rawValue();
+		if ("&".equals(raw)) {
+			return "&amp;";
+		}
+		if ("<".equals(raw)) {
+			return "&lt;";
+		}
+		return raw;
 	}
 
 	@Override

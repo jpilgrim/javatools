@@ -1,0 +1,5 @@
+\def\makelessletter{\catcode`\<=11\relax}%
+\def\makelessother{\catcode`\<=12\relax}%
+a<b\makelessletter <b>bold</b>\makelessother a<b
+% ---------------
+<p>a&lt;b<b>bold</b>a&lt;b</p>

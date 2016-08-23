@@ -1,4 +1,4 @@
-\def\f{\&lt;}%
-\f\ world
+\newcommand\subtype{\&lt;}%
+$\subtype$ world
 % ---------------
-<p>&lt; world</p>
+<p><i>&lt;<i> world</p>
