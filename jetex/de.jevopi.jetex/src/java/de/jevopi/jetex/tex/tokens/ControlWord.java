@@ -16,6 +16,9 @@ public class ControlWord extends ControlSequence {
 	public ControlWord(StringBuilder word) {
 		this.word = word.toString();
 	}
+	public ControlWord(String word) {
+		this.word = word;
+	}
 
 	@Override
 	public String toString() {

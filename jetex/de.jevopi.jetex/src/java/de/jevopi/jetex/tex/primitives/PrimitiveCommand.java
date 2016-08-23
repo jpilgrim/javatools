@@ -24,5 +24,7 @@ public abstract class PrimitiveCommand extends Command {
 	public String getName() {
 		return name;
 	}
+	
+	
 
 }

@@ -23,7 +23,13 @@ import java.util.Optional;
 import java.util.Stack;
 
 import de.jevopi.jetex.tex.CatcodeMap;
+import de.jevopi.jetex.tex.Category;
+import de.jevopi.jetex.tex.Mode;
+import de.jevopi.jetex.tex.expansion.ExpansionError;
 import de.jevopi.jetex.tex.primitives.PrimitiveCommand;
+import de.jevopi.jetex.tex.tokens.ControlWord;
+import de.jevopi.jetex.tex.tokens.IExpandableTokenIterator;
+import de.jevopi.jetex.tex.tokens.Token;
 
 /**
  * Internal state of whole processor.
@@ -31,9 +37,19 @@ import de.jevopi.jetex.tex.primitives.PrimitiveCommand;
 public class ProcessorState {
 	final CatcodeMap catcodeMap;
 
+	public Mode mode = Mode.vertical;
+
 	final Map<String, Command> commands = new HashMap<>();
 
 	boolean inhibitExpansion = false;
+
+	public IExpandableTokenIterator tokens;
+	
+	List<IProcessorStateListener> processorStateListeners = new ArrayList<>();
+
+	
+	public final static ControlWord INDENT = new ControlWord("indent");
+	public final static ControlWord NOINDENT = new ControlWord("indent");
 
 	/**
 	 * Stack of condition results, used by else and fi to determine whether to
@@ -49,7 +65,16 @@ public class ProcessorState {
 			throw new RuntimeException(ex);
 		}
 	}
-
+	
+	public void registerProcessorStateListener(IProcessorStateListener listener) {
+		processorStateListeners.add(listener);
+	}
+	
+	public void removeProcessorStateListener(IProcessorStateListener listener) {
+		processorStateListeners.remove(listener);
+	}
+	
+	
 	private void initPrimitiveCommands() throws IOException, InstantiationException, IllegalAccessException,
 			ClassNotFoundException {
 		Class<PrimitiveCommand> classPC = PrimitiveCommand.class;
@@ -144,6 +169,54 @@ public class ProcessorState {
 			return Optional.empty();
 		}
 		return Optional.of(conditionResults.peek());
+	}
+
+	public void handleModeSwitching(Token token) {
+		switch (token.getCategory()) {
+		case MATHSHIFT:
+			if (!tokens.hasNext() || tokens.peek().getCategory()==Category.MATHSHIFT) {
+				break; // vmode ? 
+			}
+		case LETTER:
+		case OTHER:
+			enforceHorizontalModel();
+			break;
+		default:
+			break;
+		}
+
+	}
+
+	public void enforceHorizontalModel() {
+		switch (mode) {
+		case vertical:
+//			if (tokens.hasNext()) {
+//				Token t = tokens.peek();
+//				if (INDENT.similar(t) || NOINDENT.similar(t)) {
+//					break;
+//				}
+//			}
+			processorStateListeners.stream().forEach(l->l.handleParagraphStart());
+			break;
+		default:
+			// TODO math mode??
+		}
+		mode = Mode.horizontal;
+
+	}
+
+	public void enforceVerticalMode() {
+		switch (mode) {
+		case horizontal:
+			processorStateListeners.stream().forEach(l->l.handleParagraphEnd());
+			break;
+		case restrictedHorizontal:
+			throw new ExpansionError(tokens.getLocation(), "Cannot switch to vertical mode.");
+		default:
+			// TODO math mode??
+		}
+		mode = Mode.vertical;
+
 	}
 
 }

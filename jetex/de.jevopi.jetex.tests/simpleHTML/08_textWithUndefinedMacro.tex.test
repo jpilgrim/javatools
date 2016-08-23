@@ -1,5 +1,5 @@
 \f{world}
 % ---------------
- world
+<p>world</p>
  % ---------------
  \newcommand\f[1]{#1}%

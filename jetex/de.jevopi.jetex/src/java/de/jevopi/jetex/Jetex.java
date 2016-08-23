@@ -31,6 +31,7 @@ public class Jetex {
 				System.exit(res);
 			}
 			app.run();
+			System.out.println("Done.");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(3);

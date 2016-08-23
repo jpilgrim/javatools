@@ -36,6 +36,7 @@ public class ExpansionProcessor extends AbstractProcessor implements IExpandable
 		this.inputProcessor = inputProcessor;
 		this.inputTokens = new ExpandableTokenIterator();
 		this.inputTokens.add(inputProcessor);
+		state.tokens = inputTokens;
 	}
 
 	@Override
@@ -52,6 +53,7 @@ public class ExpansionProcessor extends AbstractProcessor implements IExpandable
 	public Token next() {
 		while (inputTokens.hasNext()) {
 			Token token = inputTokens.next();
+			
 			if (canExpand(token)) {
 				Iterator<Token> expansion = expandToken(token);
 				if (expansion != null) {
@@ -84,6 +86,11 @@ public class ExpansionProcessor extends AbstractProcessor implements IExpandable
 			Command cmd = state.getCommand(seq);
 			if (cmd == null) {
 				throw new ExpansionError(getLocation(), "Undefined control sequence '" + seq + "'.");
+			}
+			if (cmd.isHorizontalCommand()) {
+				state.enforceHorizontalModel();
+			} else if (cmd.isVerticalCommand()) {
+				state.enforceVerticalMode();
 			}
 			Iterator<Token> res = cmd.expand(state, this);
 			return res;

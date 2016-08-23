@@ -60,7 +60,7 @@ public class CategorySwitch<INPUT, RETURN> {
 		case OTHER:
 			return caseOther(input);
 		case PAR:
-			return casePar(input);
+			return caseParameter(input);
 		case SPACE:
 			return caseSpace(input);
 		case SUB:
@@ -123,7 +123,7 @@ public class CategorySwitch<INPUT, RETURN> {
 		return defaultCase(SPACE, input);
 	}
 
-	protected RETURN casePar(INPUT input) {
+	protected RETURN caseParameter(INPUT input) {
 		return defaultCase(PAR, input);
 	}
 

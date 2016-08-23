@@ -1,6 +1,6 @@
 \f x%
 \f[Hello]{world}%
 % ---------------
- xHelloworld
+<p>xHelloworld</p>
  % ---------------
  \newcommand\f[2][]{#1#2}%

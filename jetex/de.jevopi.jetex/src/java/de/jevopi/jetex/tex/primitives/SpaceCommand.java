@@ -34,4 +34,9 @@ public class SpaceCommand extends PrimitiveCommand {
 	public Iterator<Token> expand(ProcessorState state, ITokenIterator tokens) {
 		return SPACE_TOKEN.iterator();
 	}
+	
+	@Override
+	public boolean isHorizontalCommand() {
+		return true;
+	}
 }

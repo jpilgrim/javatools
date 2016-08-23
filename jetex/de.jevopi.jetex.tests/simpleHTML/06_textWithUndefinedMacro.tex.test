@@ -1,5 +1,5 @@
 \f[Hello] world
 % ---------------
- Hello world
+<p>Hello world</p>
  % ---------------
  \newcommand\f[1][]{#1}%

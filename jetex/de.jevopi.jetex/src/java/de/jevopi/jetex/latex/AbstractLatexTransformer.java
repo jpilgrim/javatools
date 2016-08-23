@@ -12,7 +12,6 @@ package de.jevopi.jetex.latex;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Set;
 
 import de.jevopi.jetex.latex.undefsupport.UndefinedCommand;
@@ -21,7 +20,7 @@ import de.jevopi.jetex.tex.execution.ExecutionProcessor;
 import de.jevopi.jetex.tex.expansion.ExpansionProcessor;
 import de.jevopi.jetex.tex.lexer.InputProcessor;
 import de.jevopi.jetex.tex.lexer.InputSource;
-import de.jevopi.jetex.tex.tokens.Token;
+import de.jevopi.jetex.tex.tokens.IExpandableTokenIterator;
 import de.jevopi.jetex.visualization.AbstractVisualProcessor;
 
 public abstract class AbstractLatexTransformer {
@@ -61,9 +60,9 @@ public abstract class AbstractLatexTransformer {
 		}
 		ExpansionProcessor ep = new ExpansionProcessor(state, ip);
 		ExecutionProcessor ex = new LatexExecutionProcessor(state, ep);
-		AbstractVisualProcessor vp = getVisualProcessor(ex);
+		AbstractVisualProcessor vp = getVisualProcessor(state, ex);
 		StringBuilder strb = new StringBuilder();
-
+		
 //		try {
 			while (vp.hasNext()) {
 				strb.append(vp.next());
@@ -105,5 +104,5 @@ public abstract class AbstractLatexTransformer {
 		return strb.toString();
 	}
 
-	abstract protected AbstractVisualProcessor getVisualProcessor(Iterator<Token> tokens);
+	abstract protected AbstractVisualProcessor getVisualProcessor(LatexProcessorState state, IExpandableTokenIterator tokens);
 }

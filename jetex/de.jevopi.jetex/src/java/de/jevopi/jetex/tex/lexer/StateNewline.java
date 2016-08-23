@@ -38,5 +38,7 @@ class StateNewline extends AbstractInputProcessorState {
 		inputProcessor.changeToStateMiddleOfLine();
 		return inputProcessor.state.switchCategory(category, input);
 	}
+	
+	
 
 }

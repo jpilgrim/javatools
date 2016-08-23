@@ -36,6 +36,7 @@ public class InputProcessor extends AbstractProcessor {
 	
 	public InputProcessor(ProcessorState state) {
 		super(state);
+		
 		stateN = new StateNewline(this);
 		stateS = new StateSkippingSpaces(this);
 		stateM = new StateMiddleOfLine(this);

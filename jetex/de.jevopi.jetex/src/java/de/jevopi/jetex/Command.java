@@ -50,5 +50,19 @@ public abstract class Command {
 		}
 		return getName().equals(c.getName());
 	}
+	
+	/**
+	 * Only overridden by some primitive commands.
+	 */
+	public boolean isHorizontalCommand() {
+		return false;
+	}
+
+	/**
+	 * Only overridden by some primitive commands.
+	 */
+	public boolean isVerticalCommand() {
+		return false;
+	}
 
 }

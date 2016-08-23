@@ -18,6 +18,7 @@ import java.util.Stack;
 import de.jevopi.jetex.ProcessorState;
 import de.jevopi.jetex.latex.LatexEnvironment.EnvironmentStatus;
 import de.jevopi.jetex.latex.latexcmds.LatexCommand;
+import de.jevopi.jetex.tex.tokens.Token;
 
 public class LatexProcessorState extends ProcessorState {
 

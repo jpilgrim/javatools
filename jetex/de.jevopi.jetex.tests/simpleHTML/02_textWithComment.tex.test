@@ -1,5 +1,5 @@
 hello % first line
 world
 % ---------------
-hello <!-- first line -->
-world
+<p>hello <!-- first line -->
+world</p>

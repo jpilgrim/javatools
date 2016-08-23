@@ -10,14 +10,14 @@
  */
 package de.jevopi.jetex.visualization;
 
-import java.util.Iterator;
-
+import de.jevopi.jetex.latex.LatexProcessorState;
+import de.jevopi.jetex.tex.tokens.IExpandableTokenIterator;
 import de.jevopi.jetex.tex.tokens.Token;
 
 public class TextProcessor extends AbstractVisualProcessor {
 
-	public TextProcessor(Iterator<Token> tokens) {
-		super(tokens);
+	public TextProcessor(LatexProcessorState state, IExpandableTokenIterator tokens) {
+		super(state, tokens);
 	}
 
 	@Override

@@ -10,17 +10,15 @@
  */
 package de.jevopi.jetex.latex;
 
-import java.util.Iterator;
-
-import de.jevopi.jetex.tex.tokens.Token;
+import de.jevopi.jetex.tex.tokens.IExpandableTokenIterator;
 import de.jevopi.jetex.visualization.AbstractVisualProcessor;
 import de.jevopi.jetex.visualization.SimpleHTMLProcessor;
 
 public class LatexToHTML extends AbstractLatexTransformer {
 
 	@Override
-	protected AbstractVisualProcessor getVisualProcessor(Iterator<Token> tokens) {
-		return new SimpleHTMLProcessor(tokens);
+	protected AbstractVisualProcessor getVisualProcessor(LatexProcessorState state, IExpandableTokenIterator tokens) {
+		return new SimpleHTMLProcessor(state, tokens);
 	}
 	
 	protected LatexProcessorState createLatexProcessorState() {

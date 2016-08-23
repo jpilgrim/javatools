@@ -34,4 +34,14 @@ public class ParToken extends Token {
 	public String toString() {
 		return "\\par";
 	}
+	
+	@Override
+	public String getSequence() {
+		return "par";
+	}
+	
+	@Override
+	public boolean isExpandable() {
+		return true;
+	}
 }

@@ -11,16 +11,18 @@
 
 package de.jevopi.jetex.tex.execution;
 
+import java.util.Iterator;
+
 import de.jevopi.jetex.AbstractProcessor;
 import de.jevopi.jetex.Command;
 import de.jevopi.jetex.ProcessorState;
 import de.jevopi.jetex.TokenAssignment;
 import de.jevopi.jetex.tex.TexLocation;
 import de.jevopi.jetex.tex.expansion.ExpansionProcessor;
-import de.jevopi.jetex.tex.tokens.ITokenIterator;
+import de.jevopi.jetex.tex.tokens.IExpandableTokenIterator;
 import de.jevopi.jetex.tex.tokens.Token;
 
-public class ExecutionProcessor extends AbstractProcessor implements ITokenIterator {
+public class ExecutionProcessor extends AbstractProcessor implements IExpandableTokenIterator {
 	
 	private final ExpansionProcessor expansionProcessor;
 
@@ -77,6 +79,12 @@ public class ExecutionProcessor extends AbstractProcessor implements ITokenItera
 	public Token peek(int lookAhead) {
 		return expansionProcessor.peek(lookAhead);
 	}
+	
+	@Override
+	public void add(Iterator<Token> expansion) {
+		expansionProcessor.add(expansion);
+		
+	}
 
 	/**
 	 * @param macro
@@ -91,4 +99,6 @@ public class ExecutionProcessor extends AbstractProcessor implements ITokenItera
 	public void addTokenAssignment(TokenAssignment tokenAssignment) {
 		state.addTokenAssignment(tokenAssignment);
 	}
+
+	
 }

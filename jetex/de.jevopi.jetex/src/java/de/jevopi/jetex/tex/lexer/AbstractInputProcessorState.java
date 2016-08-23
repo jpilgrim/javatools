@@ -106,7 +106,7 @@ abstract class AbstractInputProcessorState extends CategorySwitch<Character, Tok
 	 * cf 2.7.4 6
 	 */
 	@Override
-	protected Token casePar(Character input) {
+	protected Token caseParameter(Character input) {
 		Token t;
 		if (!this.inputProcessor.hasNext()) {
 			t = new CharacterToken(input, Category.PAR);
@@ -185,5 +185,7 @@ abstract class AbstractInputProcessorState extends CategorySwitch<Character, Tok
 	protected Token defaultCase(Category category, Character input) {
 		return new CharacterToken(input, category);
 	}
+	
+	
 
 }

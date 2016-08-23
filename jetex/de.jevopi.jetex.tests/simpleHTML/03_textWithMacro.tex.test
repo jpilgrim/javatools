@@ -1,4 +1,4 @@
 \def\f{Hello }%
 \f world
 % ---------------
-Hello world
+<p>Hello world</p>

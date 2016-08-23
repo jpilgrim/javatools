@@ -1,6 +1,6 @@
 \begin{env}world\end{env}
 % ---------------
-world
+<p>world</p>
 % ---------------
 \newenvironment{env}%
 	{}%

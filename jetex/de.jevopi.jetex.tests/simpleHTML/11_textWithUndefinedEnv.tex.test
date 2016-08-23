@@ -1,6 +1,6 @@
 \begin{env}[Hello]{world}yeah\end{env}
 % ---------------
-Helloworldyeah
+<p>Helloworldyeah</p>
 % ---------------
 \newenvironment{env}[2][]%
 	{#1#2}%

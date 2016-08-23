@@ -1,0 +1,10 @@
+\newenvironment{itemize}{<ul>}{</ul>}%
+\def\item{<li>}%
+before
+\begin{itemize}
+\item one
+\item two
+\end{itemize}
+after
+% ---------------
+<p>before <ul> <li>one <li>two </ul> after</p>
