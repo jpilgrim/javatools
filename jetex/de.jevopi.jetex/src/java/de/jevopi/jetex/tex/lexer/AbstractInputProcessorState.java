@@ -86,6 +86,7 @@ abstract class AbstractInputProcessorState extends CategorySwitch<Character, Tok
 			inputProcessor.changeToStateSkippingSpaces();
 			return t;
 		}
+		case TAB: // escape &
 		case COMMENT: // escape % -- TODO check
 		case SUB: // escape _ -- TODO check
 		case SUPER: // escape ^ -- TODO check
